@@ -1,1 +1,35 @@
+export class Monster{
+  constructor(scene, player){
+    this.player = player;
+    this.speed = 0.02;
 
+    this.mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(1,2,1),
+      new THREE.MeshStandardMaterial({color:0x220000})
+    );
+    scene.add(this.mesh);
+    this.mesh.position.set(10,1,10);
+
+    this.learnedDir = new THREE.Vector3();
+  }
+
+  update(){
+    let dir = new THREE.Vector3().subVectors(
+      this.player.position,
+      this.mesh.position
+    ).normalize();
+
+    this.learnedDir.lerp(dir, 0.01);
+
+    this.mesh.position.add(this.learnedDir.multiplyScalar(this.speed));
+
+    if(this.mesh.position.distanceTo(this.player.position)<1){
+      alert("You Died");
+      location.reload();
+    }
+  }
+
+  levelUp(n){
+    this.speed += 0.01;
+  }
+}
